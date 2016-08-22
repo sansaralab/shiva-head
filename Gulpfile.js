@@ -6,7 +6,7 @@ var webpack = require("webpack");
 var path = require("path");
 
 var paths = {
-    jsout: "./shiva/head/build/",
+    jsout: "./shiva/head/dst/",
     jsin: "./shiva/head/src/"
 };
 

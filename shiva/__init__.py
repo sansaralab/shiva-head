@@ -1,6 +1,6 @@
 from flask import Flask, g
 from shiva.tools.request import error
-app = Flask(__name__, template_folder='head/build')
+app = Flask(__name__, template_folder='head/dst')
 
 
 @app.errorhandler(404)
