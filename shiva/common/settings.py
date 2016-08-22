@@ -1,3 +1,3 @@
-APP_HOST = 'localhost'
+APP_HOST = '127.0.0.1'
 APP_PORT = 3000
 APP_DEBUG = True
