@@ -1,8 +1,7 @@
-from urllib.parse import urlparse
-from time import time
-from flask import render_template, make_response, request
+from flask import render_template, make_response, request, jsonify
 from shiva import app
-from .services import new_user_id
+from shiva.domain.types import UserVisit, UserData
+from .services import update_userid_cookie, get_or_create_user_id, send_visit_to_queue, send_action_to_queue
 
 
 @app.route('/')
@@ -12,14 +11,37 @@ def index():
 
 @app.route('/tracker.js', methods=['GET'])
 def serve_track_js():
-    user_id = request.cookies.get('userid', None)
     resp = make_response(render_template('tracker.min.js', server=request.host_url))
+    update_userid_cookie(request, resp)
     resp.headers['Content-Type'] = 'application/javascript; charset=utf-8'
-    if user_id is None:
-        host = request.host_url
-        parsed_uri = urlparse(host)
-        domain = '{uri.netloc}'.format(uri=parsed_uri)
-        resp.set_cookie(
-            key='userid', value=new_user_id(), httponly=True,
-            expires=time() + 315360000, domain=domain)
+    return resp
+
+
+@app.route('/tracker/visit', methods=['GET'])
+def track_visit():
+    user_id = get_or_create_user_id(request)
+    data = UserVisit(
+        ip=request.remote_addr,
+        page=request.args.get('page', None),
+        user_agent=str(request.user_agent),
+        user_id=user_id
+    )
+    send_visit_to_queue(data)
+    resp = make_response(jsonify(dict(ok=True)))
+    update_userid_cookie(request, resp)
+    return resp
+
+
+@app.route('/tracker/action', methods=['POST'])
+def track_action():
+    user_id = get_or_create_user_id(request)
+    data = UserData(
+        user_id=user_id,
+        action_type=request.form.get('type', None),
+        action_name=request.form.get('name', None),
+        action_value=request.form.get('value', None)
+    )
+    send_action_to_queue(data)
+    resp = make_response(jsonify(dict(ok=True)))
+    update_userid_cookie(request, resp)
     return resp
