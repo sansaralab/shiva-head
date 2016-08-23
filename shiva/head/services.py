@@ -26,6 +26,16 @@ def update_userid_cookie(request, response):
     return user_id
 
 
+def add_allow_all_origins_header(request, response):
+    response.headers['Access-Control-Allow-Origin'] = request.referrer.strip('/')
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Max-Age'] = 1728000
+    response.headers['Access-Control-Allow-Headers'] = \
+        'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type, ' \
+        'Set-Cookie'
+
+
 def send_visit_to_queue(visit: UserVisit):
     pass
 

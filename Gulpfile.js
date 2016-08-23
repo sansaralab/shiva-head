@@ -24,7 +24,7 @@ gulp.task("webpack", function (callback) {
         output: {
             path: paths.jsout,
             filename: "tracker.min.js",
-            publicPath: "/tracker/"
+            publicPath: "/"
         },
         plugins: [
             new webpack.optimize.OccurenceOrderPlugin(),
