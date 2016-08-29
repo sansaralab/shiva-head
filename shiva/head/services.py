@@ -39,10 +39,10 @@ def add_allow_all_origins_header(request, response):
 
 
 def send_visit_to_queue(visit: UserVisit):
-    data = dumps(visit)
+    data = dumps(visit._asdict())
     return put(data)
 
 
 def send_action_to_queue(action: UserData):
-    data = dumps(action)
+    data = dumps(action._asdict())
     return put(data)
