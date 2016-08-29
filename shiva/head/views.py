@@ -12,6 +12,14 @@ def index():
 
 @app.route('/shiva.js', methods=['GET'])
 def serve_track_js():
+    user_id = get_or_create_user_id(request)
+    data = UserVisit(
+        ip=request.remote_addr,
+        page=request.args.get('page', None),
+        user_agent=str(request.user_agent),
+        user_id=user_id
+    )
+    send_visit_to_queue(data)
     resp = make_response(render_template('tracker.min.js', server=request.host_url))
     add_allow_all_origins_header(request, resp)
     update_userid_cookie(request, resp)

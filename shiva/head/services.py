@@ -1,7 +1,9 @@
 import uuid
 from urllib.parse import urlparse
 from time import time
+from flask.json import dumps
 from shiva.domain.types import UserVisit, UserData
+from shiva.tools.queue import put
 
 
 def new_user_id():
@@ -37,8 +39,10 @@ def add_allow_all_origins_header(request, response):
 
 
 def send_visit_to_queue(visit: UserVisit):
-    pass
+    data = dumps(visit)
+    return put(data)
 
 
 def send_action_to_queue(action: UserData):
-    pass
+    data = dumps(action)
+    return put(data)
